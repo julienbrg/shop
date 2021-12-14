@@ -1,6 +1,6 @@
 # Shop
 
-A simple NFT shop
+A simple NFT shop.
 
 ## Install
 
@@ -15,3 +15,10 @@ npm i
 npx hardhat test
 ```
 
+## Run
+
+```
+cd frontend
+yarn install
+yarn react-app:start
+```
