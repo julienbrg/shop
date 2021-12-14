@@ -26,7 +26,6 @@ contract Shop is ERC721Holder, Ownable, ReentrancyGuard {
         price = _price;
         beneficiary = _beneficiary;
         IERC721(addr).safeTransferFrom(msg.sender,address(this),id);
-        transferOwnership(msg.sender);
     }
 
     function buy() public payable nonReentrant {
