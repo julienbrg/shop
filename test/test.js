@@ -58,13 +58,14 @@ describe("Interactions", function () {
     expect(await ethers.provider.getBalance(shop.address)).to.equal(ethers.utils.parseEther("0"));
     await francis.sendTransaction({to: shop.address, value: ethers.utils.parseEther("10")});
     await shop.connect(alice).withdraw();
-    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9989.999971457041088855"));
+    await alice.sendTransaction({to: francis.address, value: ethers.utils.parseEther("10")});
+    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9999.999971452377995895"));
   });
 
   it("Francis buys Alice's NFT", async function () {
     await shop.connect(francis).buy({value: ethers.utils.parseEther("3")});
     expect(await thistle.ownerOf(1)).to.equal(francis.address);
-    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9987.999860877489185580"));
+    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9997.999860899522809891"));
   });
 
 });

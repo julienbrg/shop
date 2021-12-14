@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract Shop is ERC721Holder, Ownable {
+contract Shop is ERC721Holder, Ownable, ReentrancyGuard {
 
     address public addr;
     uint public id;
@@ -28,7 +29,7 @@ contract Shop is ERC721Holder, Ownable {
         _transferOwnership(msg.sender);
     }
 
-    function buy() public payable {
+    function buy() public payable nonReentrant {
         require(msg.value >= price, "Not enough");
         payable(beneficiary).transfer(price);
         IERC721(addr).safeTransferFrom(address(this), msg.sender, id);
@@ -40,6 +41,6 @@ contract Shop is ERC721Holder, Ownable {
     }
 
     receive() external payable {}
-    
+
     fallback() external payable {}
 }
