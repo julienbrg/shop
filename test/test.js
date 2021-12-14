@@ -30,7 +30,7 @@ describe("Deployment", function () {
 
 });
 
-describe("Scenario #1", function () {
+describe("Interactions", function () {
 
   it("Bob approves the Shop to transfer his NFT", async function () {
     console.log(" ");
@@ -55,14 +55,16 @@ describe("Scenario #1", function () {
   });
 
   it("Francis accidentally sends money to the contract", async function () {
-    francis.sendTransaction({to: shop.address,value: ethers.utils.parseEther("10")});
-    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("10000"));
+    expect(await ethers.provider.getBalance(shop.address)).to.equal(ethers.utils.parseEther("0"));
+    await francis.sendTransaction({to: shop.address, value: ethers.utils.parseEther("10")});
+    await shop.connect(francis).flush();
+    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9999.999934583292122528"));
   });
 
   it("Francis buys Alice's NFT", async function () {
     await shop.connect(francis).buy({value: ethers.utils.parseEther("3")});
     expect(await thistle.ownerOf(1)).to.equal(francis.address);
-    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9997.999848283080864485"));
+    expect(await ethers.provider.getBalance(francis.address)).to.equal(ethers.utils.parseEther("9997.999824102581735808"));
   });
 
 });

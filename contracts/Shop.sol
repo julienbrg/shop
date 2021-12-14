@@ -33,7 +33,10 @@ contract Shop is ERC721Holder {
         payable(msg.sender).transfer(msg.value - price);
     }
 
-    receive() external payable {
-        payable(msg.sender).transfer(msg.value);
+    function flush() public payable {
+        payable(msg.sender).transfer(address(this).balance);
     }
+
+    receive() external payable {}
+    fallback() external payable {}
 }
