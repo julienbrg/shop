@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Shop is ERC721Holder {
+contract Shop is ERC721Holder, Ownable {
 
     address public addr;
     uint public id;
@@ -24,6 +25,7 @@ contract Shop is ERC721Holder {
         price = _price;
         beneficiary = _beneficiary;
         IERC721(addr).safeTransferFrom(msg.sender,address(this),id);
+        _transferOwnership(msg.sender);
     }
 
     function buy() public payable {
@@ -33,10 +35,11 @@ contract Shop is ERC721Holder {
         payable(msg.sender).transfer(msg.value - price);
     }
 
-    function flush() public payable {
+    function withdraw() public payable onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
     }
 
     receive() external payable {}
+    
     fallback() external payable {}
 }
