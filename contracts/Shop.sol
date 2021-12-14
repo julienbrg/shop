@@ -10,40 +10,30 @@ contract Shop is ERC721Holder {
     uint public id;
     uint public price;
     address public beneficiary;
-    bool public open;
 
     constructor (
         address _addr, 
-        uint _id, 
-        uint _price, 
-        address _beneficiary
+        uint _id 
         ) 
     {
         addr = _addr;
         id = _id;
-        price = _price;
-        beneficiary = _beneficiary;
     }
 
-    function sell() public payable {
+    function sell(uint _price, address _beneficiary) public payable {
+        price = _price;
+        beneficiary = _beneficiary;
         IERC721(addr).safeTransferFrom(msg.sender,address(this),id);
-        open = true;
     }
 
     function buy() public payable {
         require(msg.value >= price, "Not enough");
-        require(open == true, "Not open");
-        open = false;
-        payable(beneficiary).transfer(msg.value);
+        payable(beneficiary).transfer(price);
         IERC721(addr).safeTransferFrom(address(this), msg.sender, id);
+        payable(msg.sender).transfer(msg.value - price);
     }
 
     receive() external payable {
-        buy();
-        if (open == true) {
-            payable(msg.sender).transfer(msg.value - price);
-        } else {
-            payable(msg.sender).transfer(msg.value);
-        }
+        payable(msg.sender).transfer(msg.value);
     }
 }
